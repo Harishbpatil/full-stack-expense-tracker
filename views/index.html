@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <title>Expense Tracker</title>
+  </head>
+  <body>
+    <div class="container mt-4">
+      <h2>Expense Tracker</h2>
+
+      <!-- Add a hidden input for storing expense ID -->
+      <input type="hidden" id="expenseId" />
+
+      <div class="form-group">
+        <label for="amount">Choose Expense Amount:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="amount"
+          placeholder="Enter amount"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="description">Choose a Description:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="description"
+          placeholder="Enter description"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="category"
+          placeholder="Enter category"
+        />
+      </div>
+
+      <!-- Update button ID and onclick handler -->
+      <button
+        type="button"
+        class="btn btn-primary mt-2"
+        onclick="addOrUpdateExpense()"
+        id="addExpenseBtn"
+      >
+        Add Expense
+      </button>
+
+      <div class="mt-4">
+        <h3>Expense List</h3>
+        <ul id="expenseList"></ul>
+      </div>
+    </div>
+    <script src="/script.js"></script>
+  </body>
+</html>
