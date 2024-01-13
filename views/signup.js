@@ -1,15 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
   var signupBtn = document.getElementById("signupBtn");
   var signupModal = document.getElementById("signupModal");
-  var closeModalBtn = document.getElementById("closeModalBtn");
   var signupFormInner = document.getElementById("signupFormInner");
 
   signupBtn.addEventListener("click", function () {
     signupModal.style.display = "block";
-  });
-
-  closeModalBtn.addEventListener("click", function () {
-    signupModal.style.display = "none";
   });
 
   signupFormInner.addEventListener("submit", function (event) {
