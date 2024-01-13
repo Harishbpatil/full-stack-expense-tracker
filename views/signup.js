@@ -1,11 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-  var signupBtn = document.getElementById("signupBtn");
-  var signupModal = document.getElementById("signupModal");
   var signupFormInner = document.getElementById("signupFormInner");
-
-  signupBtn.addEventListener("click", function () {
-    signupModal.style.display = "block";
-  });
 
   signupFormInner.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -26,11 +20,13 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
+        alert("Signup successful! You can now log in.");
+
+        window.location.href = "/login.html";
       })
       .catch((error) => {
         console.error("Error:", error);
+        alert("Error during signup. Please try again.");
       });
-
-    signupModal.style.display = "none";
   });
 });

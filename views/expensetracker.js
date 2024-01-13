@@ -101,12 +101,12 @@ async function updateExpenseList() {
         }, Description: ${
           expense && expense.description ? expense.description : "N/A"
         }
-          <button class="btn btn-warning btn-sm mx-1" onclick="editExpense(${
-            expense.id
-          })">Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteExpense(${
-            expense.id
-          })">Delete</button>`;
+            <button class="btn btn-warning btn-sm mx-1" onclick="editExpense(${
+              expense.id
+            })">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteExpense(${
+              expense.id
+            })">Delete</button>`;
         expenseList.appendChild(listItem);
       });
     } else {
