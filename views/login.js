@@ -20,10 +20,15 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            console.log("Login successful");
+            alert("Login successful");
             window.location.href = "/expensetracker";
+          } else if (data.error === "User not found") {
+            alert("404!! User not found. Please check your credentials.");
           } else {
-            console.error("Login failed. Response:", data);
+            alert(
+              "Error 401 User Not Authorized Login failed. You have entered the wrong password",
+              data
+            );
           }
         })
         .catch((error) => {

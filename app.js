@@ -80,7 +80,7 @@ app.post("/login", async (req, res) => {
       req.session.user = user;
       res.json({ success: true, message: "Login successful" });
     } else {
-      res.status(401).json({ error: "Invalid credentials" });
+      res.status(404).json({ error: "User not found" });
     }
   } catch (error) {
     console.error("Error during login:", error);
