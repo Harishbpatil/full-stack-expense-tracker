@@ -3,6 +3,7 @@ const cors = require("cors");
 const path = require("path");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+const bcrypt = require("bcrypt");
 const sequelize = require("./util/database");
 const expenseRoutes = require("./routes/expense");
 const expensetrackerRoutes = require("./routes/expensetracker");
@@ -52,11 +53,15 @@ app.post("/signup", async (req, res) => {
         .json({ error: "User already registered. Please login." });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newUser = await User.create({
       name: name,
       email: email,
-      password: password,
+      password: hashedPassword,
     });
+
+    console.log("New user created:", newUser);
 
     res.json({ success: true, message: "Signup successful!", user: newUser });
   } catch (error) {
@@ -72,13 +77,18 @@ app.post("/login", async (req, res) => {
     const user = await User.findOne({
       where: {
         email: email,
-        password: password,
       },
     });
 
     if (user) {
-      req.session.user = user;
-      res.json({ success: true, message: "Login successful" });
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (passwordMatch) {
+        req.session.user = user;
+        res.json({ success: true, message: "Login successful" });
+      } else {
+        res.status(401).json({ error: "Invalid credentials" });
+      }
     } else {
       res.status(404).json({ error: "User not found" });
     }
