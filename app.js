@@ -48,6 +48,7 @@ app.post("/signup", async (req, res) => {
 
     if (existingUser) {
       console.log("User already registered. Please login.");
+
       return res
         .status(400)
         .json({ error: "User already registered. Please login." });
