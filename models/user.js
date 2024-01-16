@@ -1,8 +1,7 @@
-// models/user.js
 const Sequelize = require("sequelize");
 const sequelize = require("../util/database");
 
-const User = sequelize.define("user signup", {
+const User = sequelize.define("user", {
   id: {
     type: Sequelize.INTEGER,
     allowNull: false,

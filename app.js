@@ -2,25 +2,25 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const bodyParser = require("body-parser");
-const session = require("express-session");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const sequelize = require("./util/database");
 const expenseRoutes = require("./routes/expense");
 const expensetrackerRoutes = require("./routes/expensetracker");
 const User = require("./models/user");
+const Expense = require("./models/expense");
 
 const app = express();
 
-app.use(cors());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
 app.use(
-  session({
-    secret: " ",
-    resave: false,
-    saveUninitialized: true,
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
   })
 );
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, "views")));
 
@@ -29,11 +29,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/expensetracker", (req, res) => {
-  if (req.session.user) {
-    res.sendFile(path.join(__dirname, "views", "expensetracker.html"));
-  } else {
-    res.redirect("/");
-  }
+  res.sendFile(path.join(__dirname, "views", "expensetracker.html"));
 });
 
 app.post("/signup", async (req, res) => {
@@ -48,7 +44,6 @@ app.post("/signup", async (req, res) => {
 
     if (existingUser) {
       console.log("User already registered. Please login.");
-
       return res
         .status(400)
         .json({ error: "User already registered. Please login." });
@@ -62,9 +57,8 @@ app.post("/signup", async (req, res) => {
       password: hashedPassword,
     });
 
-    console.log("New user created:", newUser);
-
-    res.json({ success: true, message: "Signup successful!", user: newUser });
+    const token = generateAccessToken(newUser.id, newUser.name);
+    res.json({ success: true, message: "Signup successful!", token: token });
   } catch (error) {
     console.error("Error during signup:", error);
     res.status(500).json({ error: error.message || "Internal server error" });
@@ -85,8 +79,8 @@ app.post("/login", async (req, res) => {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (passwordMatch) {
-        req.session.user = user;
-        res.json({ success: true, message: "Login successful" });
+        const token = generateAccessToken(user.id, user.name);
+        res.json({ success: true, message: "Login successful", token: token });
       } else {
         res.status(401).json({ error: "Invalid credentials" });
       }
@@ -102,6 +96,9 @@ app.post("/login", async (req, res) => {
 app.use("/expense", expenseRoutes);
 app.use("/expensetracker", expensetrackerRoutes);
 
+User.hasMany(Expense);
+Expense.belongsTo(User);
+
 sequelize
   .sync()
   .then(() => {
@@ -111,3 +108,9 @@ sequelize
     });
   })
   .catch((error) => console.error("Error syncing database:", error));
+
+function generateAccessToken(id, name) {
+  return jwt.sign({ userId: id, name: name }, "harish", {
+    expiresIn: "1h",
+  });
+}

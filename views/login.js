@@ -20,15 +20,13 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            alert("Login successful");
+            console.log("Token received:", data.token);
+            localStorage.setItem("token", data.token);
             window.location.href = "/expensetracker";
           } else if (data.error === "User not found") {
             alert("404!! User not found. Please check your credentials.");
           } else {
-            alert(
-              "Error 401 User Not Authorized Login failed. You have entered the wrong password",
-              data
-            );
+            alert("Invalid credentials. Please check your email and password.");
           }
         })
         .catch((error) => {
