@@ -1,0 +1,120 @@
+/* Reset some default styles for better consistency */
+body,
+h1,
+h2,
+h3,
+p,
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  line-height: 1.6;
+}
+
+/* Basic styling for the header */
+header {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+}
+
+header div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#premium,
+#logout {
+  background-color: #4caf50;
+  color: #fff;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Style the form in the "choose-expense" div */
+.choose-expense {
+  margin: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 5px;
+}
+
+input,
+select {
+  margin-bottom: 10px;
+  padding: 8px;
+}
+
+#btn {
+  background-color: #3498db;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Style the display area */
+.display {
+  margin: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+li:last-child {
+  border-bottom: none;
+}
+
+/* Style individual elements in the list */
+.expense-name {
+  font-weight: bold;
+}
+
+.expense-category {
+  color: #888;
+}
+
+.expense-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-btn,
+.edit-btn {
+  background-color: #e74c3c;
+  color: #220d0d;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+  header div {
+    flex-direction: column;
+  }
+}

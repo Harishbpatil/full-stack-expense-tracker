@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
-const sequelize = require("../util/database");
+
+const sequelize = require("../util/db");
 
 const Expense = sequelize.define("expenses", {
   id: {
@@ -8,7 +9,7 @@ const Expense = sequelize.define("expenses", {
     primaryKey: true,
     autoIncrement: true,
   },
-  amount: {
+  expense: {
     type: Sequelize.STRING,
     allowNull: false,
   },

@@ -1,116 +1,85 @@
-const express = require("express");
-const router = express.Router();
 const Expense = require("../models/expense");
-const userauthentication = require("../middleware/auth");
 
-// Add an expense
-router.post(
-  "/addExpense",
-  userauthentication.authenticate,
-  async (req, res) => {
-    try {
-      const { amount, description, category, userId } = req.body;
+exports.getAll = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ success: false, msg: "Unauthorized" });
+    }
 
-      if (!amount) {
-        return res.status(400).json({ error: "Amount is required" });
+    const expenses = await req.user.getExpenses({
+      raw: true,
+      attributes: ["id", "expense", "category", "description"],
+    });
+
+    return res.json({ data: expenses });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Internal server error" });
+  }
+};
+
+exports.addExpense = (req, res) => {
+  const { expense, description, category } = req.body;
+
+  req.user
+    .createExpense({ expense, description, category })
+    .then((data) => {
+      return res.json({ data });
+    })
+    .catch((e) => {
+      console.error(e);
+      return res.status(403).json({ success: false });
+    });
+};
+
+exports.deleteExpense = (req, res) => {
+  const id = req.params.id;
+  req.user
+    .getExpenses({ where: { id: id } })
+    .then((expense) => {
+      if (!expense || expense.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, msg: "Expense not found" });
       }
 
-      const newExpense = await Expense.create({
-        amount,
-        description,
-        category,
-        userId,
-      });
+      return expense[0].destroy();
+    })
+    .then(() => {
+      return res
+        .status(200)
+        .json({ success: true, msg: "Deleted successfully" });
+    })
+    .catch((e) => {
+      console.error(e);
+      return res.status(401).json({ success: false });
+    });
+};
 
-      return res.status(201).json({ success: true, expense: newExpense });
-    } catch (error) {
-      console.error("Error adding expense:", error);
-      return res.status(500).json({ error: "Internal server error" });
+exports.editExpense = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const expense = await req.user.getExpenses({ where: { id: id } });
+
+    if (!expense || expense.length === 0) {
+      return res.status(404).json({ success: false, msg: "Expense not found" });
     }
+
+    // Update the expense fields
+    expense[0].expense = req.body.expense || expense[0].expense;
+    expense[0].description = req.body.description || expense[0].description;
+    expense[0].category = req.body.category || expense[0].category;
+
+    // Save the changes
+    await expense[0].save();
+
+    return res.json({ success: true, msg: "Expense updated successfully" });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Internal server error" });
   }
-);
-
-// Update an expense
-router.put(
-  "/updateExpense/:id",
-  userauthentication.authenticate,
-  async (req, res) => {
-    try {
-      const { amount, description, category } = req.body;
-      const expenseId = req.params.id;
-
-      const updatedExpense = await Expense.update(
-        { amount, description, category },
-        { where: { id: expenseId } }
-      );
-
-      if (updatedExpense[0] === 1) {
-        return res.status(200).json({ success: true });
-      } else {
-        return res.status(404).json({ error: "Expense not found" });
-      }
-    } catch (error) {
-      console.error("Error updating expense:", error);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-  }
-);
-
-// Get all expenses
-router.get(
-  "/getExpenses",
-  userauthentication.authenticate,
-  async (req, res) => {
-    try {
-      const expenses = await Expense.findAll();
-      return res.status(200).json({ success: true, expenses });
-    } catch (error) {
-      console.error("Error retrieving expenses:", error);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-  }
-);
-
-// Get a single expense by ID
-router.get(
-  "/getExpense/:id",
-  userauthentication.authenticate,
-  async (req, res) => {
-    try {
-      const expenseId = req.params.id;
-      const expense = await Expense.findByPk(expenseId);
-
-      if (expense) {
-        return res.status(200).json({ success: true, expense });
-      } else {
-        return res.status(404).json({ error: "Expense not found" });
-      }
-    } catch (error) {
-      console.error("Error fetching expense:", error);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-  }
-);
-
-// Delete an expense by ID
-router.delete(
-  "/deleteExpense/:id",
-  userauthentication.authenticate,
-  async (req, res) => {
-    try {
-      const expenseId = req.params.id;
-      const deletedRows = await Expense.destroy({ where: { id: expenseId } });
-
-      if (deletedRows === 1) {
-        return res.status(200).json({ success: true });
-      } else {
-        return res.status(404).json({ error: "Expense not found" });
-      }
-    } catch (error) {
-      console.error("Error deleting expense:", error);
-      return res.status(500).json({ error: "Internal server error" });
-    }
-  }
-);
-
-module.exports = router;
+};
