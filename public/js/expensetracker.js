@@ -14,7 +14,6 @@ var id = null;
 
 async function saveDetails(e) {
   e.preventDefault();
-  // console.log("demo")
 
   try {
     const value = {
@@ -23,16 +22,11 @@ async function saveDetails(e) {
       category: e.target.category.value,
     };
     if (id === null) {
-      console.log(localStorage.getItem("token"));
       let { data } = await axiosInstance.post("/add-expense", value, {
         headers: {
           "auth-token": localStorage.getItem("token"),
         },
       });
-      // let {data } = await axiosInstance.post('/add-expense' ,
-      // //      value
-      // // )
-      console.log(data.data);
       let li = display(data.data);
       ul.appendChild(li);
     } else {
@@ -41,7 +35,6 @@ async function saveDetails(e) {
           "auth-token": localStorage.getItem("token"),
         },
       });
-      console.log(res);
       if (res.status == 200) {
         value.id = id;
         let li = display(value);
@@ -63,18 +56,28 @@ async function renderElements() {
   if (localStorage.getItem("token") == undefined)
     window.location = "/login.html";
 
-  // axiosInstance.setHeaders({});
   let data = await axiosInstance.get("/", {
     headers: {
       "auth-token": localStorage.getItem("token"),
     },
   });
-  console.log(data);
+
   let users = data.data.data;
   users.forEach((value) => {
     let li = display(value);
     ul.appendChild(li);
   });
+
+  let loggedInUserId = localStorage.getItem("token");
+  let loggedInUser = users.find((user) => user.id === loggedInUserId);
+  if (loggedInUser) {
+    if (loggedInUser.isPremium) {
+      let premiumMessageElement = document.getElementById("premiumMessage");
+      if (premiumMessageElement) {
+        premiumMessageElement.style.display = "block";
+      }
+    }
+  }
 }
 
 function display(data) {
@@ -137,11 +140,11 @@ document.getElementById("logout").addEventListener("click", () => {
   window.location = "/login.html";
 });
 
-document.getElementById("premium").addEventListener("click", purchaseMembeship);
+document
+  .getElementById("premium")
+  .addEventListener("click", purchaseMembership);
 
-async function purchaseMembeship(e) {
-  // alert("perchased")
-
+async function purchaseMembership(e) {
   try {
     const response = await axios.post(
       "http://localhost:4000/payment/purchasemembership",
@@ -152,13 +155,10 @@ async function purchaseMembeship(e) {
         },
       }
     );
-    console.log(response);
     var options = {
       key: response.data.key,
-
-      order_id: response.data.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+      order_id: response.data.order_id,
       handler: async function (response) {
-        console.log(response);
         const res = await axios.post(
           "http://localhost:4000/payment/success",
           {
@@ -171,14 +171,12 @@ async function purchaseMembeship(e) {
             },
           }
         );
-
-        alert("success");
+        alert("Success");
       },
     };
     var rzp1 = new Razorpay(options);
     rzp1.on("payment.failed", async function (response) {
-      alert("failded");
-      console.log(response.error);
+      alert("Failed");
       const res = await axios.post(
         "http://localhost:4000/payment/failed",
         {
@@ -192,7 +190,6 @@ async function purchaseMembeship(e) {
       );
       console.log(res);
     });
-
     rzp1.open();
     e.preventDefault();
   } catch (e) {
