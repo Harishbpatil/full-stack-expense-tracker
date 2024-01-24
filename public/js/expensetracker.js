@@ -14,42 +14,39 @@ var id = null;
 
 async function saveDetails(e) {
   e.preventDefault();
+  // console.log("demo")
 
   try {
-    const authToken = localStorage.getItem("token");
-    if (!authToken) {
-      alert("Please log in to add or edit expenses.");
-      window.location = "/login.html";
-      return;
-    }
-
     const value = {
       expense: e.target.expense.value,
       description: e.target.description.value,
       category: e.target.category.value,
     };
-
     if (id === null) {
+      console.log(localStorage.getItem("token"));
       let { data } = await axiosInstance.post("/add-expense", value, {
         headers: {
-          "auth-token": authToken,
+          "auth-token": localStorage.getItem("token"),
         },
       });
+      // let {data } = await axiosInstance.post('/add-expense' ,
+      // //      value
+      // // )
+      console.log(data.data);
       let li = display(data.data);
       ul.appendChild(li);
     } else {
       let res = await axiosInstance.post(`/edit-expense/${id}`, value, {
         headers: {
-          "auth-token": authToken,
+          "auth-token": localStorage.getItem("token"),
         },
       });
-
+      console.log(res);
       if (res.status == 200) {
         value.id = id;
         let li = display(value);
         ul.insertBefore(li, next);
       }
-
       next = null;
       id = null;
     }
@@ -63,27 +60,21 @@ async function saveDetails(e) {
 }
 
 async function renderElements() {
-  const authToken = localStorage.getItem("token");
-  if (!authToken) {
+  if (localStorage.getItem("token") == undefined)
     window.location = "/login.html";
-    return;
-  }
 
-  try {
-    let data = await axiosInstance.get("/", {
-      headers: {
-        "auth-token": authToken,
-      },
-    });
-
-    let users = data.data.data;
-    users.forEach((value) => {
-      let li = display(value);
-      ul.appendChild(li);
-    });
-  } catch (error) {
-    console.error(error);
-  }
+  // axiosInstance.setHeaders({});
+  let data = await axiosInstance.get("/", {
+    headers: {
+      "auth-token": localStorage.getItem("token"),
+    },
+  });
+  console.log(data);
+  let users = data.data.data;
+  users.forEach((value) => {
+    let li = display(value);
+    ul.appendChild(li);
+  });
 }
 
 function display(data) {
@@ -114,28 +105,18 @@ function display(data) {
 
 async function handleClick(e) {
   try {
-    const authToken = localStorage.getItem("token");
-    if (!authToken) {
-      alert("Please log in to perform actions.");
-      window.location = "/login.html";
-      return;
-    }
-
     if (e.target.classList.contains("delete")) {
       let expenseId = e.target.id;
       let res = await axiosInstance.delete(`/deleteExpense/${expenseId}`, {
         headers: {
-          "auth-token": authToken,
+          "auth-token": localStorage.getItem("token"),
         },
       });
-
       if (res.status == 200) {
         ul.removeChild(e.target.parentElement);
       }
-
       console.log(res);
     }
-
     if (e.target.classList.contains("edit")) {
       next = e.target.parentElement.nextElementSibling;
       id = e.target.id;
@@ -156,15 +137,10 @@ document.getElementById("logout").addEventListener("click", () => {
   window.location = "/login.html";
 });
 
-document.getElementById("premium").addEventListener("click", purchaseMembership);
+document.getElementById("premium").addEventListener("click", purchaseMembeship);
 
-async function purchaseMembership(e) {
-  const authToken = localStorage.getItem("token");
-  if (!authToken) {
-    alert("Please log in to make a premium purchase.");
-    window.location = "/login.html";
-    return;
-  }
+async function purchaseMembeship(e) {
+  // alert("perchased")
 
   try {
     const response = await axios.post(
@@ -172,67 +148,49 @@ async function purchaseMembership(e) {
       null,
       {
         headers: {
-          "auth-token": authToken,
+          "auth-token": localStorage.getItem("token"),
         },
       }
     );
-
-    const options = {
+    console.log(response);
+    var options = {
       key: response.data.key,
-      order_id: response.data.order_id,
+
+      order_id: response.data.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
       handler: async function (response) {
         console.log(response);
-
-        try {
-          const successResponse = await axios.post(
-            "http://localhost:4000/payment/success",
-            {
-              payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            },
-            {
-              headers: {
-                "auth-token": authToken,
-              },
-            }
-          );
-
-          if (successResponse.data.success) {
-            alert("Payment successful");
-            console.log(successResponse);
-          } else {
-            alert("Payment failed");
-          }
-        } catch (error) {
-          console.error(error);
-          alert("Payment failed");
-        }
-      },
-    };
-
-    const rzp1 = new Razorpay(options);
-
-    rzp1.on("payment.failed", async function (response) {
-      console.log(response.error);
-      alert("Payment failed");
-
-      try {
-        const failResponse = await axios.post(
-          "http://localhost:4000/payment/failed",
+        const res = await axios.post(
+          "http://localhost:4000/payment/success",
           {
-            payment_id: response.error.metadata.payment_id,
+            payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
           },
           {
             headers: {
-              "auth-token": authToken,
+              "auth-token": localStorage.getItem("token"),
             },
           }
         );
 
-        console.log(failResponse);
-      } catch (error) {
-        console.error(error);
-      }
+        alert("success");
+      },
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.on("payment.failed", async function (response) {
+      alert("failded");
+      console.log(response.error);
+      const res = await axios.post(
+        "http://localhost:4000/payment/failed",
+        {
+          payment_id: response.error.metadata.payment_id,
+        },
+        {
+          headers: {
+            "auth-token": localStorage.getItem("token"),
+          },
+        }
+      );
+      console.log(res);
     });
 
     rzp1.open();

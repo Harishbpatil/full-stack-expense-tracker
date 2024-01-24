@@ -1,28 +1,30 @@
-document.getElementById('login').addEventListener('submit', loginUser);
+document.getElementById("login").addEventListener("submit", loginUser);
 
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:4000/user"
+  baseURL: "http://localhost:4000/user",
 });
 
 async function loginUser(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    const data = {
-        email: e.target.email.value,
-        password: e.target.password.value
-    };
+  const data = {
+    email: e.target.email.value,
+    password: e.target.password.value,
+  };
 
-    try {
-        const result = await axiosInstance.post('/login', data);
-        console.log(result);
+  try {
+    const result = await axiosInstance.post("/login", data);
+    console.log(result);
 
-        if (result.data.success) {
-            alert("Login successful");
-            localStorage.setItem('token', result.data.token);
-            window.location.href = "/expensetracker.html"; // Redirect to expensetracker.html
-        }
-    } catch (e) {
-        console.log(e);
-        alert(e.response.data.msg);
+    if (result.data.success) {
+      alert("Login successful");
+      localStorage.setItem("token", result.data.token);
+
+      // Redirect to the expensetracker page
+      window.location = "/expensetracker.html";
     }
+  } catch (e) {
+    console.log(e);
+    alert(e.response.data.msg);
+  }
 }

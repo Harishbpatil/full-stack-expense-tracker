@@ -1,17 +1,15 @@
-const express = require('express')
+const express = require("express");
 
+const router = express.Router();
 
-const router = express.Router()
+const auth = require("../middleware/auth");
 
-const auth = require('../middleware/auth')
+const User = require("../models/user");
 
-const User = require('../models/user')
+const userController = require("../controllers/user");
 
-const userController = require('../controllers/user')
+router.post("/createUser", userController.createUser);
 
-router.post('/createUser' , userController.createUser)
-
-
-router.post('/login' , userController.login)
+router.post("/login", userController.login);
 
 module.exports = router;

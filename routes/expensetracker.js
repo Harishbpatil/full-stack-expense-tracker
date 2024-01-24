@@ -1,27 +1,17 @@
 const express = require("express");
 const router = express.Router();
 
-// middleware to check if the user is authenticated
-function isAuthenticated(req, res, next) {
-  if (req.session.user) {
-    return next();
-  } else {
-    res.status(401).json({ error: "Unauthorized access" });
-  }
-}
+const Expense = require("../models/expense");
+const expense = require("../controller/expense");
 
-router.get("/expenses", isAuthenticated, (req, res) => {
-  res.json({ success: true, expenses: [] });
-});
+const authenticate = require("../middleware/auth");
 
-router.get("/expenses/:id", isAuthenticated, (req, res) => {
-  res.json({ success: true, expense: null });
-});
+router.get("/", authenticate, expense.getAll); //fetch all the expense
 
-router.post("/expenses", isAuthenticated, async (req, res) => {
-  const { amount, description, category } = req.body;
+router.post("/add-expense", authenticate, expense.addExpense); // add a new expense
 
-  res.status(201).json({ success: true, expense: null });
-});
+router.delete("/deleteExpense/:id", authenticate, expense.deleteExpense); // delete a expense
+
+router.post("/edit-expense/:id", authenticate, expense.editExpense);
 
 module.exports = router;

@@ -1,46 +1,29 @@
-const express = require("express");
-const router = express.Router();
-const User = require("../models/user");
-const axios = require("axios");
+document.getElementById("signup").addEventListener("submit", createUser);
 
-router.post("/signup", async (req, res) => {
-  const { name, email, password } = req.body;
-
-  try {
-    const existingUser = await User.findOne({
-      where: {
-        email: email,
-      },
-    });
-
-    if (existingUser) {
-      console.log("User already registered. Please login.");
-      return res
-        .status(400)
-        .json({ error: "User already registered. Please login." });
-    }
-
-    const newUser = await User.create({
-      name: name,
-      email: email,
-      password: password,
-    });
-
-    // Assuming you have a separate endpoint for signup in the frontend
-    // Adjust the URL as needed
-    const response = await axios.post("http://localhost:4000/user/signup", {
-      name: newUser.name,
-      email: newUser.email,
-    });
-
-    console.log(response.data);
-    alert("Signup Successfully!!, You Can Login Now!");
-    res.json({ success: true, message: "Signup successful!", user: newUser });
-  } catch (error) {
-    console.error("Error during signup:", error);
-
-    res.status(500).json({ error: error.message || "Internal server error" });
-  }
+const axiosInstance = axios.create({
+  baseURL: "http://localhost:4000/user",
 });
 
-module.exports = router;
+async function createUser(e) {
+  e.preventDefault();
+  console.log(e.target.name.value);
+  console.log(e.target.email.value);
+  console.log(e.target.password.value);
+  try {
+    const data = {
+      name: e.target.name.value,
+      email: e.target.email.value,
+      password: e.target.password.value,
+    };
+    const res = await axiosInstance.post("/createUser", data);
+
+    console.log(res);
+    e.target.name.value = "";
+    e.target.email.value = "";
+    e.target.password.value = "";
+  } catch (e) {
+    console.log(e.response.status);
+    if (e.response.status == 401) alert("user already exists");
+    console.log(e);
+  }
+}

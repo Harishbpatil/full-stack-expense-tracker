@@ -1,75 +1,56 @@
 const express = require("express");
 const cors = require("cors");
-const sequelize = require("./util/db");
 const path = require("path");
 
 const app = express();
 
-// Middleware for Content Security Policy
+const sequelize = require("./util/db");
 
-// Middleware setup
-app.use(cors());
-app.use(express.json());
+const expenseRoutes = require("./routes/expense");
+const userRoutes = require("./routes/user");
+const paymentsRoutes = require("./routes/purchase");
 
-// Define models
 const User = require("./models/user");
 const Expense = require("./models/expense");
 const Order = require("./models/order");
 
-// Define associations
+app.use(cors());
+app.use(express.json());
+
 User.hasMany(Expense);
 Expense.belongsTo(User);
 
 User.hasMany(Order);
 Order.belongsTo(User);
 
-// Define routes
-const expenseRoutes = require("./routes/expense");
-const userRoutes = require("./routes/user");
-const paymentsRoutes = require("./routes/purchase");
+// Serve static files from the "public" directory
+app.use(express.static(path.join(__dirname, "public")));
 
-// Serving static files
-app.use("/css", express.static(path.join(__dirname, "public/css")));
-app.use("/js", express.static(path.join(__dirname, "public/js")));
 app.use(express.static(path.join(__dirname, "views")));
-app.use(express.static("public"));
+// Render the signup page when accessing the root path
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "/views/signup.html"));
+});
 
-app.use(
-  express.static("public", {
-    setHeaders: (res, path, stat) => {
-      if (path.endsWith(".css")) {
-        res.setHeader("Content-Type", "text/css");
-      }
-    },
-  })
-);
+// Render the login page when accessing the /login path
+app.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "/views/login.html"));
+});
+
+// Render the expensetracker page when accessing the /expensetracker path
+app.get("/expensetracker", (req, res) => {
+  res.sendFile(path.join(__dirname, "/views/expensetracker.html"));
+});
 
 app.use("/expense", expenseRoutes);
 app.use("/user", userRoutes);
 app.use("/payment", paymentsRoutes);
 
-// Root path route handler
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "signup.html"));
-});
-
-// Login page route handler
-app.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "views", "login.html"));
-});
-
-// Sync database and start server
 sequelize
   .sync()
-  .then(() => {
-    const PORT = process.env.PORT || 4000;
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+  .then((result) => {
+    app.listen(4000, () => {
+      console.log("Server is running on port 4000");
     });
   })
-  .catch((e) => {
-    console.error("Error syncing with the database:", e);
-    process.exit(1); // Exit the process with an error code
-  });
-
-module.exports = app; // Export the app for testing purposes if needed
+  .catch((e) => console.log(e));

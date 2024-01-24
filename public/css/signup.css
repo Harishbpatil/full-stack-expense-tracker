@@ -1,5 +1,5 @@
 body {
-  background-color: color-mix(in oklab, rgb(12, 12, 12) 50%, rgb(1, 5, 1) 30%);
+  background-color: color-mix(in oklab, rgb(27, 27, 36) 25%, green 30%);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,16 +11,16 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  border: 0.8rem solid #b32075;
+  border: 0.8rem solid #b78989;
   padding: 2rem;
-  background-color: color-mix(in oklab, #802525 15%, #ffffff 49%);
+  background-color: color-mix(in oklab, #7c3f3f 15%, #ffffff 49%);
 }
 .signup button {
   width: 6rem;
   /* margin: 0 4rem; */
   box-sizing: border-box;
   padding: 0.8rem 0.4rem;
-  background-color: color-mix(in oklab, #220ba5 15%, #0bc7e9 49%);
+  background-color: color-mix(in oklab, #7c3f3f 15%, #baaaa6 49%);
   border-radius: 0.4rem;
   margin: 0 6rem;
 }
