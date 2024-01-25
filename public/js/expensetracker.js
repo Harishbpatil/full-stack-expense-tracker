@@ -53,30 +53,58 @@ async function saveDetails(e) {
 }
 
 async function renderElements() {
-  if (localStorage.getItem("token") == undefined)
+  let token = localStorage.getItem("token");
+
+  if (token == undefined) {
     window.location = "/login.html";
+    return;
+  }
 
-  let data = await axiosInstance.get("/", {
-    headers: {
-      "auth-token": localStorage.getItem("token"),
-    },
-  });
+  try {
+    let data = await axiosInstance.get("/", {
+      headers: {
+        "auth-token": token,
+      },
+    });
 
-  let users = data.data.data;
-  users.forEach((value) => {
-    let li = display(value);
-    ul.appendChild(li);
-  });
+    let users = data.data.data;
 
-  let loggedInUserId = localStorage.getItem("token");
-  let loggedInUser = users.find((user) => user.id === loggedInUserId);
-  if (loggedInUser) {
-    if (loggedInUser.isPremium) {
-      let premiumMessageElement = document.getElementById("premiumMessage");
+    // Save premium status in localStorage
+    let loggedInUserId = localStorage.getItem("token");
+    let loggedInUser = users.find((user) => user.id === loggedInUserId);
+
+    if (loggedInUser) {
+      localStorage.setItem("isPremium", loggedInUser.isPremium);
+    }
+
+    users.forEach((value) => {
+      let li = display(value);
+      ul.appendChild(li);
+    });
+
+    let premiumMessageElement = document.getElementById("premiumMessage");
+    let buyPremiumButton = document.getElementById("premium");
+
+    // Retrieve premium status from localStorage
+    let isPremium = localStorage.getItem("isPremium") === "true";
+
+    if (isPremium) {
       if (premiumMessageElement) {
         premiumMessageElement.style.display = "block";
       }
+      if (buyPremiumButton) {
+        buyPremiumButton.style.display = "none"; // Hide the "Buy Premium" button
+      }
+    } else {
+      if (premiumMessageElement) {
+        premiumMessageElement.style.display = "none"; // Hide the premium message
+      }
+      if (buyPremiumButton) {
+        buyPremiumButton.style.display = "block"; // Show the "Buy Premium" button
+      }
     }
+  } catch (error) {
+    console.error("Error fetching data:", error);
   }
 }
 
@@ -137,6 +165,7 @@ async function handleClick(e) {
 
 document.getElementById("logout").addEventListener("click", () => {
   localStorage.removeItem("token");
+  localStorage.removeItem("isPremium"); // Remove premium status on logout
   window.location = "/login.html";
 });
 
@@ -171,7 +200,11 @@ async function purchaseMembership(e) {
             },
           }
         );
-        alert("Success");
+        alert("You are a premium user now!!");
+        document.getElementById("premium").style.visibility = "hidden";
+        document.getElementById("message").innerHTML =
+          "You are a premium user!";
+        localStorage.setItem("isPremium", true); // Set premium status in local storage
       },
     };
     var rzp1 = new Razorpay(options);
