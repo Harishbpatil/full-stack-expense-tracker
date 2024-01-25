@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/expensetracker.css" />
-    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="css/expensetracker.css" />
+    <title>Document</title>
   </head>
-
   <body>
     <header>
       <div>
-        <div id="message"></div>
         <button id="premium">Buy premium</button>
+        <span id="premium-user" class="hide">you are now a premium user</span>
+        <button id="showleaderboard" class="hide">show leaderboard</button>
         <button id="logout">Logout</button>
       </div>
     </header>
@@ -33,13 +33,16 @@
       </form>
     </div>
     <div class="display">
+      <h3>Expenses</h3>
       <ul></ul>
     </div>
-    <!-- Placeholder for premium message -->
-    <div id="premiumMessage" style="display: none">You are a premium user!</div>
-
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
-    <script src="/js/expensetracker.js"></script>
+    <div id="leaderboard">
+      <h3>leaderboard</h3>
+      <ul></ul>
+    </div>
   </body>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+  <script src="js/expensetracker.js"></script>
 </html>

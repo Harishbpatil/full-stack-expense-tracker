@@ -13,6 +13,7 @@ const paymentsRoutes = require("./routes/purchase");
 const User = require("./models/user");
 const Expense = require("./models/expense");
 const Order = require("./models/order");
+const premiumRoutes = require("./routes/premium");
 
 app.use(cors());
 app.use(express.json());
@@ -23,21 +24,20 @@ Expense.belongsTo(User);
 User.hasMany(Order);
 Order.belongsTo(User);
 
-// Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.static(path.join(__dirname, "views")));
-// Render the signup page when accessing the root path
+
+app.use("/premium", premiumRoutes);
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/views/signup.html"));
 });
 
-// Render the login page when accessing the /login path
 app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "/views/login.html"));
 });
 
-// Render the expensetracker page when accessing the /expensetracker path
 app.get("/expensetracker", (req, res) => {
   res.sendFile(path.join(__dirname, "/views/expensetracker.html"));
 });
