@@ -37,26 +37,39 @@ exports.addExpense = (req, res) => {
     });
 };
 
-exports.deleteExpense = (req, res) => {
+exports.deleteExpense = async (req, res) => {
   const id = req.params.id;
-  req.user
-    .getExpenses({ where: { id: id } })
-    .then(async (expense) => {
-      req.user.totalAmount =
-        Number(req.user.totalAmount) - Number(expense[0].expense);
-      console.log(expense);
-      await req.user.save();
-      return expense[0].destroy();
-    })
-    .then(() => {
+
+  return Expense.sequelize.transaction(async (t) => {
+    try {
+      const expense = await req.user.getExpenses({
+        where: { id: id },
+        transaction: t,
+      });
+
+      if (!expense || expense.length === 0) {
+        return res
+          .status(404)
+          .json({ success: false, msg: "Expense not found" });
+      }
+
+      req.user.totalAmount -= Number(expense[0].expense);
+      await req.user.save({ transaction: t });
+
+      await expense[0].destroy({ transaction: t });
+
       return res
         .status(200)
-        .json({ success: true, msg: "deleted successfully" });
-    })
-    .catch((e) => {
+        .json({ success: true, msg: "Deleted successfully" });
+    } catch (e) {
       console.log(e);
-      return res.status(401).json({ success: false });
-    });
+      // Rollback the transaction in case of an error
+      await t.rollback();
+      return res
+        .status(500)
+        .json({ success: false, msg: "Internal server error" });
+    }
+  });
 };
 
 exports.editExpense = (req, res) => {
