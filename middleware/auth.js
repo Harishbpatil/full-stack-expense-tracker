@@ -1,5 +1,5 @@
+// auth.js
 const jwt = require("jsonwebtoken");
-
 const User = require("../models/user");
 
 const authenticate = async (req, res, next) => {
@@ -11,11 +11,11 @@ const authenticate = async (req, res, next) => {
     console.log(data);
     const user = await User.findByPk(data.id);
 
-    // return res.json({success : true})
     req.user = user;
+    req.isPremiumUser = user.isPremiumUser; 
     next();
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return res
       .status(500)
       .json({ success: false, msg: "Internal server error" });

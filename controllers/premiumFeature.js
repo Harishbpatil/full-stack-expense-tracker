@@ -1,32 +1,29 @@
 const Sequelize = require("sequelize");
+
 const Expense = require("../models/expense");
 const User = require("../models/user");
 
-exports.getUserLeaderboard = async (req, res) => {
+exports.checkPremium = async (req, res) => {
   try {
-    if (true) {
+    const result = await req.user.isPremiumUser;
+    return res.json(result);
+  } catch (e) {
+    console.log(e);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Internal server error" });
+  }
+};
+
+exports.showLeaderBoard = async (req, res) => {
+  try {
+    // return res.json(req.user)
+    if (req.isPremiumUser) {
       const result = await User.findAll({
-        attributes: [
-          "id",
-          "name",
-          [
-            Sequelize.fn(
-              "COALESCE",
-              Sequelize.literal("SUM(`expenses`.`expense`)"),
-              0
-            ),
-            "total",
-          ],
-        ],
-        include: [
-          {
-            model: Expense,
-            attributes: [],
-          },
-        ],
-        group: [`User.id`],
-        order: [[Sequelize.literal("total"), "DESC"]],
+        attributes: ["id", "name", "totalAmount"],
+        order: [["totalAmount", "DESC"]],
       });
+      console.log(result);
       return res.json(result);
     } else {
       return res
@@ -34,7 +31,7 @@ exports.getUserLeaderboard = async (req, res) => {
         .json({ success: false, msg: "you are not a premium user" });
     }
   } catch (e) {
-    console.error(e);
+    console.log(e);
     return res
       .status(500)
       .json({ success: false, msg: "Internal server error" });
