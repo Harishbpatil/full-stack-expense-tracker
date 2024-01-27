@@ -14,6 +14,7 @@ const User = require("./models/user");
 const Expense = require("./models/expense");
 const Order = require("./models/order");
 const premiumRoutes = require("./routes/premium");
+const passwordRoutes = require('./routes/forgotpassword')
 
 app.use(cors());
 app.use(express.json());
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "views")));
 
 app.use("/premium", premiumRoutes);
+app.use('/password', passwordRoutes)
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/views/signup.html"));
