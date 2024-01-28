@@ -2,7 +2,7 @@ body {
   font-family: "Arial", sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #1908b8;
+  background-color: #262333;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,7 +12,7 @@ body {
 .login-display {
   max-width: 400px;
   padding: 20px;
-  background: rgba(241, 214, 214, 0.9); 
+  background: rgba(252, 249, 249, 0.9); 
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
   backdrop-filter: blur(8px); 
@@ -36,7 +36,7 @@ form {
 label {
   display: block;
   margin-bottom: 8px;
-  color: #333;
+  color: #030303;
 }
 
 input {
@@ -51,7 +51,7 @@ input {
 
 input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #3f422d;
 }
 
 button {
@@ -70,9 +70,9 @@ button:hover {
 
 a {
   text-decoration: none;
-  color: #3498db;
+  color: #ffffff;
 }
 
 a:hover {
-  color: #2980b9;
+  color: #ffffff;
 }

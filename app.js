@@ -14,7 +14,9 @@ const User = require("./models/user");
 const Expense = require("./models/expense");
 const Order = require("./models/order");
 const premiumRoutes = require("./routes/premium");
-const passwordRoutes = require('./routes/forgotpassword')
+const passwordRoutes = require('./routes/forgot-password')
+const resetPassword = require('./models/resetPassword')
+
 
 app.use(cors());
 app.use(express.json());
@@ -25,12 +27,15 @@ Expense.belongsTo(User);
 User.hasMany(Order);
 Order.belongsTo(User);
 
+User.hasMany(resetPassword)
+resetPassword.belongsTo(User)
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.static(path.join(__dirname, "views")));
 
 app.use("/premium", premiumRoutes);
-app.use('/password', passwordRoutes)
+app.use("/password", passwordRoutes);
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/views/signup.html"));
