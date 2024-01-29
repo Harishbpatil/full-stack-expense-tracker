@@ -1,4 +1,5 @@
 const Expense = require("../models/expense");
+const S3Services = require("../services/s3services");
 
 exports.getAll = (req, res) => {
   req.user
@@ -89,4 +90,33 @@ exports.editExpense = (req, res) => {
       console.log(e);
       return res.status(403).json({ success: false });
     });
+};
+
+exports.downloadExpenses = async (req, res) => {
+  try {
+    const expenses = await req.user.getExpenses();
+    const expensesToString = JSON.stringify(expenses);
+    const fileName = `expense${req.user.id}/${new Date()}.txt`;
+    const fileUrl = await S3Services.uploadToS3(expensesToString, fileName);
+    let url = fileUrl.Location;
+    await req.user.createDownload({ url: url });
+    return res.json({ fileUrl: fileUrl.Location, success: true });
+  } catch (e) {
+    console.log(e);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Internal server error" });
+  }
+};
+
+exports.downloadUrls = async (req, res) => {
+  try {
+    const urls = await req.user.getDownloads();
+    return res.json({ success: true, urls });
+  } catch (e) {
+    console.log(e);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Internal server error" });
+  }
 };

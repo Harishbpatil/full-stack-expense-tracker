@@ -2,30 +2,17 @@ const Sequelize = require("sequelize");
 
 const sequelize = require("../util/db");
 
-const Expense = sequelize.define("expense", {
+const Download = sequelize.define("download", {
   id: {
     type: Sequelize.INTEGER,
-    allowNull: false,
     primaryKey: true,
     autoIncrement: true,
-  },
-  expense: {
-    type: Sequelize.STRING,
     allowNull: false,
   },
-  description: {
-    type: Sequelize.STRING,
-    allowNull: false,
-  },
-  category: {
+  url: {
     type: Sequelize.STRING,
     allowNull: false,
   },
 });
 
-{
-  timestamps: false
-
-}
-
-module.exports = Expense;
+module.exports = Download;

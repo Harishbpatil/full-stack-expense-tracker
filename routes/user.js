@@ -12,4 +12,7 @@ router.post("/createUser", userController.createUser);
 
 router.post("/login", userController.login);
 
+router.get('/download' , auth , userController.downloadExpenses)
+
+
 module.exports = router;
