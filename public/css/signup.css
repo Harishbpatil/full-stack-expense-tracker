@@ -12,7 +12,7 @@ body {
 .signup {
   max-width: 400px;
   padding: 20px;
-  background: rgba(219, 209, 217, 0.9); 
+  background: rgba(252, 252, 252, 0.9); 
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
   backdrop-filter: blur(8px); 
@@ -21,7 +21,7 @@ body {
 }
 
 .signup:hover {
-  background: rgb(236, 197, 197); 
+  background: rgb(180, 137, 137); 
   box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2); 
 }
 
@@ -51,7 +51,7 @@ input {
 
 input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #dff048;
 }
 
 button {
