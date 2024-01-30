@@ -39,15 +39,23 @@ header button {
   margin-left: 10px;
 }
 
-.choose-expense {
+.choose-expense,
+.display,
+.page,
+.number-of-expenses,
+#leaderboard,
+#download-urls {
   margin: 20px;
-}
-
-form {
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
 }
 
 label {
@@ -60,7 +68,6 @@ input,
 select {
   width: 100%;
   padding: 10px;
-  margin-bottom: 10px;
   box-sizing: border-box;
 }
 
@@ -86,12 +93,16 @@ button.page-btn:hover {
   background-color: #45a049;
 }
 
-.display,
-#leaderboard {
-  margin: 20px;
+.number-of-expenses label {
+  margin-bottom: 10px;
 }
 
-h2 {
+.number-of-expenses select {
+  padding: 8px;
+}
+
+h2,
+h3 {
   color: #333;
 }
 
@@ -100,6 +111,14 @@ ul {
   padding: 0;
 }
 
-.page {
-  text-align: center;
+#download-urls h3 {
+  margin-bottom: 10px;
+}
+
+#download-urls ul {
+  padding-left: 20px;
+}
+
+.hide {
+  display: none;
 }

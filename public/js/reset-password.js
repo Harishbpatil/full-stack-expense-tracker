@@ -5,31 +5,20 @@ const axiosInstance = axios.create({
 });
 
 window.addEventListener("load", async () => {
-  try {
-    let url = window.location.href;
-    let arr = url.split("?reset=");
-    resetId = arr[1];
-
-    if (resetId == null || resetId.length === 0) {
-      alert("Invalid link. Redirecting to forgot-password.html");
-      window.location.replace("forgot-password.html");
-      return;
-    }
-
-    const res = await axiosInstance.get(`/check-password-link/${resetId}`);
-
-    if (!res.data.isActive) {
-      alert("Link expired. Get a new one. Redirecting to forgot-password.html");
-      window.location.replace("forgot-password.html");
-      return;
-    }
-
-    console.log(res);
-  } catch (error) {
-    console.error(error);
-    alert("An unexpected error occurred. Redirecting to forgot-password.html");
-    window.location.replace("forgot-password.html");
+  let url = window.location.href;
+  let arr = url.split("?reset=");
+  resetId = arr[1];
+  console.log(resetId);
+  if (resetId == null || resetId.length == 0) {
+    alert("wrong link");
+    location.href = "forgot-password.html";
   }
+  const res = await axiosInstance.get(`/check-password-link/${resetId}`);
+  if (!res.data.isActive) {
+    alert("link expired get a new one");
+    location.href = "forgot-password.html";
+  }
+  console.log(res);
 });
 
 const form = document.forms[0];
@@ -40,24 +29,22 @@ async function handleSubmit(e) {
     e.preventDefault();
     const newPassword = e.target["new-password"].value;
     const confirmPassword = e.target["confirm-password"].value;
+    console.log(newPassword);
 
-    if (newPassword !== confirmPassword) {
-      alert("New and confirm passwords do not match");
-    } else {
+    if (newPassword !== confirmPassword)
+      alert("new and confirm password are different");
+    else {
       const res = await axiosInstance.post(`/reset-password/${resetId}`, {
         newPassword,
         confirmPassword,
       });
-
+      console.log(res);
       if (res.data.success) {
-        alert("Password changed successfully. You can now login.");
-        window.location.replace("login.html");
-      } else {
-        alert(res.data.msg || "An error occurred. Please try again.");
+        alert("password changed successfully now you can login again");
+        window.location.href = "login.html";
       }
     }
-  } catch (error) {
-    console.error(error);
-    alert("An unexpected error occurred. Please try again.");
+  } catch (e) {
+    console.log(e);
   }
 }

@@ -31,6 +31,9 @@ Order.belongsTo(User);
 User.hasMany(resetPassword)
 resetPassword.belongsTo(User)
 
+User.hasMany(Download)
+Download.belongsTo(User)
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.static(path.join(__dirname, "views")));
