@@ -6,18 +6,14 @@ const expense = require("../controllers/expense");
 
 const authenticate = require("../middleware/auth");
 
-router.get("/", authenticate, expense.getAll); //fetch all the expense
+router.get("/", authenticate, expense.getAll);
 
-router.post("/add-expense", authenticate, expense.addExpense); // add a new expense
+router.post("/add-expense", authenticate, expense.addExpense);
 
-router.delete("/deleteExpense/:id", authenticate, expense.deleteExpense); // delete a expense
+router.delete("/deleteExpense/:id", authenticate, expense.deleteExpense);
 
 router.post("/edit-expense/:id", authenticate, expense.editExpense);
 
-router.get('/download' , authenticate , expense.downloadExpenses)
-router.get('/get-all-urls' , authenticate , expense.downloadUrls)
-
-
-
+router.get("/get-expense", authenticate, expense.getExpenses);
 
 module.exports = router;

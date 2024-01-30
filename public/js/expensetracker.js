@@ -7,6 +7,9 @@ ul.addEventListener("click", handleClick);
 
 const axiosInstance = axios.create({
   baseURL: "http://localhost:4000/expense",
+  headers: {
+    "auth-token": localStorage.getItem("token"),
+  },
 });
 
 var next = null;
@@ -14,7 +17,7 @@ var id = null;
 
 async function saveDetails(e) {
   e.preventDefault();
-  // console.log("demo")
+ 
 
   try {
     const value = {
@@ -24,23 +27,13 @@ async function saveDetails(e) {
     };
     if (id === null) {
       console.log(localStorage.getItem("token"));
-      let { data } = await axiosInstance.post("/add-expense", value, {
-        headers: {
-          "auth-token": localStorage.getItem("token"),
-        },
-      });
-      // let {data } = await axiosInstance.post('/add-expense' ,
-      // //      value
-      // // )
+      let { data } = await axiosInstance.post("/add-expense", value);
+      
       console.log(data.data);
       let li = display(data.data);
       ul.appendChild(li);
     } else {
-      let res = await axiosInstance.post(`/edit-expense/${id}`, value, {
-        headers: {
-          "auth-token": localStorage.getItem("token"),
-        },
-      });
+      let res = await axiosInstance.post(`/edit-expense/${id}`, value);
       console.log(res);
       if (res.status == 200) {
         value.id = id;
@@ -80,14 +73,9 @@ async function renderElements() {
     document.getElementById("premium").classList.add("hide");
   }
 
-  // axiosInstance.setHeaders({});
-  let data = await axiosInstance.get("/", {
-    headers: {
-      "auth-token": localStorage.getItem("token"),
-    },
-  });
-  console.log(data);
-  let users = data.data.data;
+
+  let result = await axiosInstance.get("/get-expense");
+  let users = result.data.expenses;
   users.forEach((value) => {
     let li = display(value);
     ul.appendChild(li);
@@ -124,11 +112,7 @@ async function handleClick(e) {
   try {
     if (e.target.classList.contains("delete")) {
       let expenseId = e.target.id;
-      let res = await axiosInstance.delete(`/deleteExpense/${expenseId}`, {
-        headers: {
-          "auth-token": localStorage.getItem("token"),
-        },
-      });
+      let res = await axiosInstance.delete(`/deleteExpense/${expenseId}`);
       if (res.status == 200) {
         ul.removeChild(e.target.parentElement);
       }
@@ -158,7 +142,7 @@ document.getElementById("logout").addEventListener("click", () => {
 document.getElementById("premium").addEventListener("click", purchaseMembeship);
 
 async function purchaseMembeship(e) {
-  // alert("perchased")
+
 
   try {
     const response = await axios.post(
@@ -182,7 +166,7 @@ async function purchaseMembeship(e) {
       var options = {
         key: response.data.key,
 
-        order_id: response.data.order_id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        order_id: response.data.order_id, 
         handler: async function (response) {
           const res = await axios.post(
             "http://localhost:4000/payment/success",
@@ -209,14 +193,7 @@ async function purchaseMembeship(e) {
         },
       };
       var rzp1 = new Razorpay(options);
-      // rzp1.on('payment.external', async function () {
-      //     const res = await axios.get("http://localhost:4000/payment/external", {
-      //     headers: {
-      //         "auth-token": localStorage.getItem('token')
-      //     }
-      // })
-      // console.log(res)
-      //   });
+   
       rzp1.on("payment.failed", async function (response) {
         alert("failded");
         console.log(response.error);
@@ -241,6 +218,69 @@ async function purchaseMembeship(e) {
     console.log(e);
   }
 }
+
+document.querySelector(".page").addEventListener("click", async (e) => {
+  try {
+    if (e.target.classList.contains("page-btn")) {
+      console.log("clicked");
+      console.log(e.target.id == "next");
+      const page = e.target.value;
+      const result = await axiosInstance.get(`/get-expense?page=${page}`);
+      console.log(result);
+      let users = result.data.expenses;
+      ul.innerHTML = ``;
+      users.forEach((value) => {
+        let li = display(value);
+        ul.appendChild(li);
+      });
+      let prev = document.getElementById("prev");
+      let curr = document.getElementById("curr");
+      let next = document.getElementById("next");
+
+      if (e.target.id == "next") {
+        prev.classList.remove("hide");
+        prev.textContent = curr.textContent;
+        prev.value = curr.value;
+
+        curr.textContent = next.textContent;
+        curr.value = next.value;
+
+        if (result.data.totalExpenses > 2 * page) {
+          next.value = +page + 1;
+          next.textContent = +page + 1;
+        } else {
+          next.classList.add("hide");
+        }
+      } else if (e.target.id == "prev") {
+        if (page > 1) {
+          next.classList.remove("hide");
+          prev.textContent = page - 1;
+          prev.value = page - 1;
+
+          curr.textContent = page;
+          curr.value = page;
+
+          next.textContent = +page + 1;
+          next.value = +page + 1;
+        } else {
+          prev.classList.add("hide");
+          curr.textContent = 1;
+          curr.value = 1;
+          if (result.data.totalExpenses > 2 * page) {
+            next.value = 2;
+            next.textContent = 2;
+          } else {
+            next.classList.add("hide");
+          }
+        }
+      }
+    }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+
 
 document
   .getElementById("showleaderboard")
@@ -296,27 +336,3 @@ document
     }
   });
 
-  async function showDownloadUrls(){
-    try{
-        const getUrls = await axiosInstance.get('/get-all-urls')
-        console.log(getUrls)
-        let urls = getUrls.data.urls;
-        const showDownloadUrls = document.getElementById('download-urls')
-        if(urls.length > 0){
-            showDownloadUrls.classList.remove('hide')
-            const ul = showDownloadUrls.querySelector('ul')
-            urls.forEach(elem =>{
-                const li = document.createElement('li')
-                const a = document.createElement('a')
-                a.href = elem.url
-                a.download = elem.createdAt + '-expense.txt'
-                a.textContent = elem.createdAt + '-expense.txt'
-                li.appendChild(a)
-
-                ul.appendChild(li)
-            })
-        }
-    }catch(e){
-        console.log(e)
-    }
-}
