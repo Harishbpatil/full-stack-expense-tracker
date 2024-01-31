@@ -2,6 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 
+const compression = require('compression')
+const morgan = require('morgan')
+//const helmet = require('helmet')
+const fs = require('fs')
+const https = require('https')
+
 const app = express();
 
 const sequelize = require("./util/db");
@@ -41,6 +47,16 @@ app.use(express.static(path.join(__dirname, "views")));
 app.use("/premium", premiumRoutes);
 app.use("/password", passwordRoutes);
 app.use('/report' , reportRoutes)
+
+app.use(compression())
+app.use(express.json())
+// app.use(helmet())
+
+const accessLogStream = fs.createWriteStream(path.join(__dirname , 'access.log'),{flags : 'a'})
+
+
+app.use(morgan('combined',{ stream :accessLogStream}))
+
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "/views/signup.html"));

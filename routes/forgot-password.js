@@ -1,38 +1,38 @@
 const express = require("express");
+
 const router = express.Router();
-const Brevo = require("@getbrevo/brevo");
+var Brevo = require("@getbrevo/brevo");
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 
 const User = require("../models/user");
-const ResetPassword = require("../models/resetPassword");
+const resetPassword = require("../models/resetPassword");
 
 const sequelize = require("../util/db");
 
 router.post("/forgot-password", async (req, res) => {
   try {
     const email = req.body.email;
-    const user = await User.findOne({
-      where: { email: email },
-      include: [{ model: ResetPassword }],
-    });
-
+    const user = await User.findOne(
+      { where: { email: email } },
+      {
+        include: [{ model: resetPassword }],
+      }
+    );
     console.log(user);
-    if (!user) {
+    console.log(user == null);
+    if (user === null)
       return res.status(404).json({ success: false, msg: "Email not found" });
-    }
 
-    Brevo.ApiClient.instance =
-      Brevo.ApiClient.instance ?? new Brevo.ApiClient();
-
-    var apiKey = Brevo.ApiClient.instance.authentications["api-key"];
+    var defaultClient = Brevo.ApiClient.instance;
+    var apiKey = defaultClient.authentications["api-key"];
     apiKey.apiKey = process.env.BREVO_API_KEY;
 
     var apiInstance = new Brevo.TransactionalEmailsApi();
 
-    const sender = { email: "harishbpatil1998@gmail.com" };
+    const sender = { email: "hp777489@gmail.com" };
 
-    const receiver = [
+    const reciever = [
       {
         email: req.body.email,
       },
@@ -41,13 +41,56 @@ router.post("/forgot-password", async (req, res) => {
 
     const response = await apiInstance.sendTransacEmail({
       sender,
-      to: receiver,
-      subject: "testing",
+      to: reciever,
+      subject: "Reset password for Expense Tracker App",
       htmlContent:
         "<p>Click the link to reset your password</p>" +
-        `<a href="http://127.0.0.1:4000/reset-password.html?reset=${link.id}">click here</a>`,
+        `<a href="http://${process.env.IP}/reset-password.html?reset=${link.id}">click here</a>`,
     });
     return res.json({ success: true, link });
+  } catch (e) {
+    console.log(e);
+    return res
+      .status(500)
+      .json({ success: false, msg: "Internal server error" });
+  }
+});
+
+router.post("/test", async (req, res) => {
+  try {
+    // const {email} = req.body;
+    // console.log(email);
+    // const user = await User.findAll({where : {email : email}},{
+    //     include : [
+    //         {model : FP}
+    //     ]
+    // })
+    // console.log(user)
+    // console.log(user== null)
+    // if(user === null)
+    //      return res.status(404).json({success : false , msg :"Email not found"})
+
+    var defaultClient = Brevo.ApiClient.instance;
+    var apiKey = defaultClient.authentications["api-key"];
+    apiKey.apiKey = process.env.BREVO_API_KEY;
+
+    var apiInstance = new Brevo.TransactionalEmailsApi();
+
+    const sender = { email: "hp777489@gmail.com" };
+
+    const reciever = [
+      {
+        email: "harishbpatil1998@gmail.com",
+      },
+    ];
+    // const link = await user.createFP();
+    const response = await apiInstance.sendTransacEmail({
+      sender,
+      to: reciever,
+      subject: "testing",
+      textContent: "hello , this is a text content",
+    });
+    return res.json({ success: true, response });
   } catch (e) {
     console.log(e);
     return res
@@ -63,20 +106,19 @@ router.post("/reset-password/:resetId", async (req, res) => {
     const newPassword = req.body.newPassword;
     const confirmPassword = req.body.confirmPassword;
 
-    const resetUser = await ResetPassword.findByPk(resetId);
-
-    if (!resetUser || !resetUser.isActive) {
+    const resetUser = await resetPassword.findByPk(resetId);
+    if (!resetUser.isActive) {
       return res
         .status(401)
-        .json({ success: false, msg: "Invalid or expired link" });
+        .json({ success: false, msg: "link expired create a new one" });
     }
-
-    if (newPassword !== confirmPassword) {
-      return res.status(403).json({
-        success: false,
-        msg: "New and confirm passwords are different",
-      });
-    }
+    if (newPassword !== confirmPassword)
+      return res
+        .status(403)
+        .json({
+          success: false,
+          msg: "new and confirm password are different",
+        });
 
     const user = await resetUser.getUser();
     const hash = await bcrypt.hash(newPassword, 10);
@@ -88,7 +130,7 @@ router.post("/reset-password/:resetId", async (req, res) => {
 
     return res.json({ success: true, msg: "Password changed successfully" });
   } catch (e) {
-    console.error(e);
+    console.log(e);
     await t.rollback();
     return res
       .status(500)
@@ -98,15 +140,10 @@ router.post("/reset-password/:resetId", async (req, res) => {
 
 router.get("/check-password-link/:resetId", async (req, res) => {
   try {
-    const resetUser = await ResetPassword.findByPk(req.params.resetId);
-
-    if (!resetUser) {
-      return res.status(404).json({ success: false, msg: "Invalid link" });
-    }
-
+    const resetUser = await resetPassword.findByPk(req.params.resetId);
     return res.json({ isActive: resetUser.isActive });
   } catch (e) {
-    console.error(e);
+    console.log(e);
     return res
       .status(500)
       .json({ success: false, msg: "Internal server error" });

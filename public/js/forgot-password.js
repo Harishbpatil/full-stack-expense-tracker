@@ -4,25 +4,18 @@ form.addEventListener("submit", handleSubmit);
 
 async function handleSubmit(e) {
   e.preventDefault();
-
+  console.log(e.target.email.value);
   try {
     const response = await axios.post(
-      "http://localhost:4000/password/forgot-password",
+      "http://3.27.133.80/password/forgot-password",
       {
         email: e.target.email.value,
       }
     );
-
     console.log(response);
-
-    if (response.status === 200) {
-      alert("Email sent successfully");
-    }
+    if (response.status == 200) alert("email sent successfully");
   } catch (e) {
     console.log(e);
-
-    if (e.response.status === 404) {
-      alert("User not found");
-    }
+    if (e.response.status == 404) alert("user not found");
   }
 }
