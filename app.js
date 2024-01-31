@@ -7,6 +7,7 @@ const morgan = require('morgan')
 //const helmet = require('helmet')
 const fs = require('fs')
 const https = require('https')
+require('dotenv').config()
 
 const app = express();
 

@@ -5,17 +5,29 @@ form.addEventListener("submit", handleSubmit);
 async function handleSubmit(e) {
   e.preventDefault();
   console.log(e.target.email.value);
+
   try {
     const response = await axios.post(
-      "http://3.27.133.80/password/forgot-password",
+      "http://13.60.7.105/password/forgot-password",
       {
         email: e.target.email.value,
       }
     );
-    console.log(response);
-    if (response.status == 200) alert("email sent successfully");
-  } catch (e) {
-    console.log(e);
-    if (e.response.status == 404) alert("user not found");
+
+    // Check if response is defined before accessing its properties
+    if (response && response.status === 200) {
+      alert("Email sent successfully");
+    } else {
+      alert("Unexpected response from the server");
+    }
+  } catch (error) {
+    console.log(error);
+
+    // Check if error.response is defined before accessing its properties
+    if (error.response && error.response.status === 404) {
+      alert("User not found");
+    } else {
+      alert("An unexpected error occurred");
+    }
   }
 }
