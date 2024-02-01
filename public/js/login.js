@@ -1,7 +1,7 @@
 document.getElementById("login").addEventListener("submit", loginUser);
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000/user",
+  baseURL: "http://54.152.171.223:3000/user",
 });
 
 async function loginUser(e) {
