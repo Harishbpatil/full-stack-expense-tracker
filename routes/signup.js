@@ -1,7 +1,7 @@
 document.getElementById("signup").addEventListener("submit", createUser);
 
 const axiosInstance = axios.create({
-  baseURL: "http://54.152.171.223:4000/user",
+  baseURL: "http://34.224.88.187:4000/user",
 });
 
 
