@@ -18,7 +18,6 @@ router.post('/edit-expense/:id' , authenticate,expense.editExpense)
 
 router.post('/get-expense' , authenticate ,expense.getExpenses )
 
-
 router.get('/download' , authenticate , expense.downloadExpenses)
 router.get('/get-all-urls' , authenticate , expense.downloadUrls)
 

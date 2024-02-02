@@ -11,6 +11,8 @@ window.addEventListener("load", () => {
     .split("T")[0];
 });
 
+
+
 document.getElementById("expense-display").addEventListener("change", (e) => {
   console.log(e.target.value);
   if (e.target.value == "daily") {

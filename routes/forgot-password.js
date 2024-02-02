@@ -38,7 +38,6 @@ router.post("/forgot-password", async (req, res) => {
       },
     ];
     const link = await user.createResetPassword();
-
     const response = await apiInstance.sendTransacEmail({
       sender,
       to: reciever,

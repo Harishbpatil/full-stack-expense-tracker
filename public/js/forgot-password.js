@@ -14,7 +14,8 @@ async function handleSubmit(e) {
       }
     );
 
-    // Check if response is defined before accessing its properties
+
+    // Check if  response status is 200
     if (response && response.status === 200) {
       alert("Email sent successfully");
     } else {

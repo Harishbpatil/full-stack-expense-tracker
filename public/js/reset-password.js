@@ -21,6 +21,8 @@ window.addEventListener("load", async () => {
   console.log(res);
 });
 
+
+
 const form = document.forms[0];
 form.addEventListener("submit", handleSubmit);
 

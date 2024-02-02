@@ -5,7 +5,6 @@ const router = express.Router()
 const auth = require('../middleware/auth')
 const { Op, literal ,fn} = require('sequelize')
 
-
 router.post('/getdate', auth, async (req, res) => {
     try {
         if (req.user.isPremiumUser) {

@@ -4,6 +4,7 @@ const axiosInstance = axios.create({
   baseURL: "http://54.152.171.223:3000/user",
 });
 
+
 async function createUser(e) {
   e.preventDefault();
   console.log(e.target.name.value);

@@ -183,6 +183,7 @@ async function purchaseMembeship(e) {
       localStorage.setItem("isPremiumUser", true);
       localStorage.setItem("token", res.data.token);
 
+      
       document.getElementById("premium-user").classList.remove("hide");
       document.getElementById("showleaderboard").classList.remove("hide");
       document.getElementById("premium").classList.add("hide");
@@ -242,6 +243,7 @@ async function purchaseMembeship(e) {
     console.log(e);
   }
 }
+
 
 document
   .getElementById("showleaderboard")

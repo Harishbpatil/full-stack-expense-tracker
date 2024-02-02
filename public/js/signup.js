@@ -17,6 +17,7 @@ async function createUser(e) {
     };
     const res = await axiosInstance.post("/createUser", data);
 
+    
     console.log(res);
     e.target.name.value = "";
     e.target.email.value = "";

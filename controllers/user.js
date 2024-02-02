@@ -34,6 +34,7 @@ exports.createUser = async (req, res) => {
   }
 };
 
+
 exports.login = async (req, res) => {
   try {
     const email = req.body.email;

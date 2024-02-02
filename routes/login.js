@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
         password: document.getElementById("password").value,
       };
 
+      
       fetch("/login", {
         method: "POST",
         headers: {

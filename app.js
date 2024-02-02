@@ -45,6 +45,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(express.static(path.join(__dirname, "views")));
 
+
 app.use("/premium", premiumRoutes);
 app.use("/password", passwordRoutes);
 app.use("/report", reportRoutes);
