@@ -8,7 +8,7 @@ async function handleSubmit(e) {
 
   try {
     const response = await axios.post(
-      "http://13.60.7.105/password/forgot-password",
+      "http://100.26.137.165/password/forgot-password",
       {
         email: e.target.email.value,
       }
