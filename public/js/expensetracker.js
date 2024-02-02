@@ -11,7 +11,7 @@ window.addEventListener("load", () => {
 tableBody.addEventListener("click", handleClick);
 
 const axiosInstance = axios.create({
-  baseURL: "http://54.152.171.223:3000/expense",
+  baseURL: "http://54.152.171.223:4000/expense",
   headers: {
     "auth-token": localStorage.getItem("token"),
   },
@@ -64,7 +64,7 @@ async function renderElements() {
   if (localStorage.getItem("token") == undefined)
     window.location = "/login.html";
 
-  let res = await axios.get("http://54.152.171.223:3000/premium/checkPremium", {
+  let res = await axios.get("http://54.152.171.223:4000/premium/checkPremium", {
     headers: {
       "auth-token": localStorage.getItem("token"),
     },
@@ -170,7 +170,7 @@ document.getElementById("premium").addEventListener("click", purchaseMembeship);
 async function purchaseMembeship(e) {
   try {
     const response = await axios.post(
-      "http://54.152.171.223:3000/payment/purchasemembership",
+      "http://54.152.171.223:4000/payment/purchasemembership",
       null,
       {
         headers: {
@@ -183,7 +183,7 @@ async function purchaseMembeship(e) {
       localStorage.setItem("isPremiumUser", true);
       localStorage.setItem("token", res.data.token);
 
-      
+
       document.getElementById("premium-user").classList.remove("hide");
       document.getElementById("showleaderboard").classList.remove("hide");
       document.getElementById("premium").classList.add("hide");
@@ -194,7 +194,7 @@ async function purchaseMembeship(e) {
         order_id: response.data.order_id,
         handler: async function (response) {
           const res = await axios.post(
-            "http://54.152.171.223:3000/payment/success",
+            "http://54.152.171.223:4000/payment/success",
             {
               payment_id: response.razorpay_payment_id,
               razorpay_signature: response.razorpay_signature,
@@ -223,7 +223,7 @@ async function purchaseMembeship(e) {
         alert("failded");
         console.log(response.error);
         const res = await axios.post(
-          "http://54.152.171.223:3000/payment/failed",
+          "http://54.152.171.223:4000/payment/failed",
           {
             payment_id: response.error.metadata.payment_id,
           },
@@ -250,7 +250,7 @@ document
   .addEventListener("click", async () => {
     try {
       const res = await axios.get(
-        "http://54.152.171.223:3000/premium/showleaderboard",
+        "http://54.152.171.223:4000/premium/showleaderboard",
         {
           headers: {
             "auth-token": localStorage.getItem("token"),
