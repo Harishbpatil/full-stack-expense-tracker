@@ -1,16 +1,15 @@
-const Sequelize = require("sequelize");
-const sequelize = require("../util/db");
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
-const resetPassword = sequelize.define("resetPassword", {
-  id: {
-    type: Sequelize.UUID,
-    defaultValue: Sequelize.UUIDV4,
-    primaryKey: true,
-  },
+const resetPassword = new Schema({
   isActive: {
-    type: Sequelize.BOOLEAN,
-    defaultValue: true,
+    type: Boolean,
+    default: true,
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "users",
   },
 });
 
-module.exports = resetPassword;
+module.exports = mongoose.model("resetPasswords", resetPassword);

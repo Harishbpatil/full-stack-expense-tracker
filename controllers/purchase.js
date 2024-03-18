@@ -35,7 +35,7 @@ exports.purchaseMembership = async (req, res) => {
   }
 };
 
-exports.successfullTransaction = async (req, res) => {
+exports.successfulTransaction = async (req, res) => {
   try {
     const orders = await req.user.getOrders({ where: { status: "PENDING" } });
 
