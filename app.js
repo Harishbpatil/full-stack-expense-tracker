@@ -4,52 +4,25 @@ const path = require("path");
 
 const compression = require("compression");
 const morgan = require("morgan");
-//const helmet = require('helmet')
 const fs = require("fs");
 const https = require("https");
 require("dotenv").config();
 
 const app = express();
 
-const sequelize = require("./util/db");
+const authenticate = require("./middleware/auth");
+const expenseController = require("./controllers/expense");
 
-// const expenseRoutes = require("./routes/expense");
 const userRoutes = require("./routes/user");
-// const paymentsRoutes = require("./routes/purchase");
 
-// const User = require("./models/user");
-// const Expense = require("./models/expense");
-// const Order = require("./models/order");
-// const premiumRoutes = require("./routes/premium");
-// const passwordRoutes = require("./routes/forgot-password");
-// const resetPassword = require("./models/resetPassword");
-// const Download = require("./models/download");
-// const reportRoutes = require("./routes/report");
 const mongoose = require("mongoose");
 app.use(cors());
 app.use(express.json());
 
-// User.hasMany(Expense);
-// Expense.belongsTo(User);
-
-// User.hasMany(Order);
-// Order.belongsTo(User);
-
-// User.hasMany(resetPassword);
-// resetPassword.belongsTo(User);
-
-// User.hasMany(Download);
-// Download.belongsTo(User);
-
 app.use(express.static(path.join(__dirname, "public")));
-
-// app.use("/premium", premiumRoutes);
-// app.use("/password", passwordRoutes);
-// app.use("/report", reportRoutes);
 
 app.use(compression());
 app.use(express.json());
-// app.use(helmet())
 
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, "access.log"),
@@ -79,14 +52,23 @@ app.get("/expensetracker", (req, res) => {
   );
 });
 
-// app.use("/expense", expenseRoutes);
+app.get('/premium/checkPremium', (req, res) => {
+  res.sendFile(path.join(__dirname, "/public/expensetracker/expensetracker.html"));
+});
+
+app.get("/expense/get-all-urls", authenticate, expenseController.downloadUrls);
+app.post("/expense/add-expense", authenticate, expenseController.addExpense);
+
 app.use("/user", userRoutes);
-// app.use("/payment", paymentsRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("connected");
-    app.listen(4000);
+    console.log("Connected to MongoDB");
+    app.listen(4000, () => {
+      console.log("Server is running on port 4000");
+    });
   })
-  .catch((e) => console.log(e));
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });

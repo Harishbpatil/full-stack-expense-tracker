@@ -28,6 +28,12 @@ async function loginUser(e) {
 
     // Check if login was successful (status code 200)
     if (res.status === 200) {
+      // Extract the token from the response
+      const token = res.data.token;
+
+      // Store the token in the localStorage
+      localStorage.setItem("token", token);
+
       // Redirect the user to the expensetracker page
       window.location.href = "/expensetracker"; // Redirect to expensetracker page
     } else {

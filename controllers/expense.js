@@ -1,46 +1,27 @@
 const Expense = require("../models/expense");
-// const sequelize = require('../util/db')
-
-const S3Services = require("../services/s3services");
-
-exports.getAllUrls = async (req, res) => {
-  try {
-    const expenses = await Expense.find({ userId: req.user._id });
-    const urls = expenses.map((expense) => ({
-      url: expense.createdAt + "-expense.txt",
-    }));
-    return res.json({ success: true, urls });
-  } catch (e) {
-    console.log(e);
-    return res
-      .status(500)
-      .json({ success: false, msg: "Internal server error" });
-  }
-};
 
 exports.addExpense = async (req, res) => {
   try {
-    const { expense, description, category } = req.body;
+    const expense = req.body.expense;
+    const description = req.body.description;
+    const category = req.body.category;
 
-    const newExpense = new Expense({
+    const data = await Expense.create({
       expense,
       description,
       category,
       userId: req.user._id,
     });
 
-    const savedExpense = await newExpense.save();
-    req.user.totalAmount += expense;
-    await req.user.save();
+    req.user.totalAmount = +req.user.totalAmount + +expense;
+    req.user.save();
 
-    return res.json({ success: true, data: savedExpense });
+    return res.json({ data });
   } catch (e) {
     console.log(e);
-    return res
-      .status(500)
-      .json({ success: false, msg: "Internal server error" });
   }
 };
+
 exports.deleteExpense = async (req, res) => {
   try {
     const id = req.params.id;
@@ -48,7 +29,7 @@ exports.deleteExpense = async (req, res) => {
       userId: req.user._id,
       _id: id,
     });
-    console.log("return from findByIdand delte  ");
+    console.log("return from findById and delete  ");
     console.log(expense);
     req.user.totalAmount =
       Number(req.user.totalAmount) - Number(expense.expense);

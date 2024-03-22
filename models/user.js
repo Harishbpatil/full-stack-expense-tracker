@@ -25,4 +25,12 @@ const userSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model("users", userSchema);
+// Define the getDownloads method
+userSchema.methods.getDownloads = async function() {
+  // Your implementation here
+  // Example: Retrieve downloads associated with this user
+  // const downloads = await Download.find({ userId: this._id });
+  // return downloads;
+};
+
+module.exports = mongoose.model("User", userSchema);
