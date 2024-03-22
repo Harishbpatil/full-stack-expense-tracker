@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign up</title>
+    <link rel="stylesheet" href="/signup/signup.css" />
+  </head>
+  <body>
+    <div class="signup">
+      <h2>Sign up</h2>
+      <form id="signup">
+        <div class="name">
+          <label for="name">Name</label>
+          <input id="name" type="text" required />
+        </div>
+        <div class="email">
+          <label for="email">Email</label>
+          <input id="email" type="email" required />
+        </div>
+        <div class="password">
+          <label for="password">Password</label>
+          <input id="password" type="password" required />
+        </div>
+        <button type="submit">Signup</button>
+      </form>
+      <button class="existing-btn"><a href="/login">Existing user - login</a></button>
+    </div>
+  </body>
+  <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="/signup/signup.js"></script>
+</html>

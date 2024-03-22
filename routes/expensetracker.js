@@ -10,6 +10,9 @@ router.get("/", authenticate, expense.getAll); //fetch all the expense
 
 router.post("/add-expense", authenticate, expense.addExpense); // add a new expense
 
+router.get("/get-all-urls", expensetrackerController.getAllUrls);
+router.post("/add-expense", expensetrackerController.addExpense);
+
 router.delete("/deleteExpense/:id", authenticate, expense.deleteExpense); // delete a expense
 
 router.post("/edit-expense/:id", authenticate, expense.editExpense);

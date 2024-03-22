@@ -5,9 +5,9 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 const paymentsController = require("../controllers/purchase");
 
-router.post("/purchasemembership", auth, paymentsController.purchaseMembership);
+router.post("/purchaseMembership", auth, paymentsController.purchaseMembership);
 
-router.post("/success", auth, paymentsController.successfullTransaction);
+router.post("/success", auth, paymentsController.successfulTransaction);
 
 router.post("/failed", auth, paymentsController.failedTransaction);
 

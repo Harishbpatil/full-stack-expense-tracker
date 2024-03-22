@@ -8,7 +8,7 @@ const expense = require('../controllers/expense')
 const authenticate = require('../middleware/auth')
 
 
-router.get('/' ,authenticate, expense.getAll)  
+// router.get('/' ,authenticate, expense.getAll)  
 
 router.post('/add-expense' , authenticate,expense.addExpense) 
 

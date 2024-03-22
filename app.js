@@ -13,19 +13,19 @@ const app = express();
 
 const sequelize = require("./util/db");
 
-const expenseRoutes = require("./routes/expense");
+// const expenseRoutes = require("./routes/expense");
 const userRoutes = require("./routes/user");
-const paymentsRoutes = require("./routes/purchase");
+// const paymentsRoutes = require("./routes/purchase");
 
-const User = require("./models/user");
-const Expense = require("./models/expense");
-const Order = require("./models/order");
+// const User = require("./models/user");
+// const Expense = require("./models/expense");
+// const Order = require("./models/order");
 // const premiumRoutes = require("./routes/premium");
 // const passwordRoutes = require("./routes/forgot-password");
 // const resetPassword = require("./models/resetPassword");
-const Download = require("./models/download");
+// const Download = require("./models/download");
 // const reportRoutes = require("./routes/report");
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 app.use(cors());
 app.use(express.json());
 
@@ -41,11 +41,7 @@ app.use(express.json());
 // User.hasMany(Download);
 // Download.belongsTo(User);
 
-
-
-
 app.use(express.static(path.join(__dirname, "public")));
-
 
 // app.use("/premium", premiumRoutes);
 // app.use("/password", passwordRoutes);
@@ -60,7 +56,7 @@ const accessLogStream = fs.createWriteStream(
   { flags: "a" }
 );
 
-
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use(morgan("combined", { stream: accessLogStream }));
 
@@ -78,16 +74,19 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/expensetracker", (req, res) => {
-  res.sendFile(path.join(__dirname, "/public/expensetracker/expensetracker.html"));
+  res.sendFile(
+    path.join(__dirname, "/public/expensetracker/expensetracker.html")
+  );
 });
 
-app.use("/expense", expenseRoutes);
+// app.use("/expense", expenseRoutes);
 app.use("/user", userRoutes);
-app.use("/payment", paymentsRoutes);
+// app.use("/payment", paymentsRoutes);
 
-mongoose.connect(process.env.MONGO_URI).then(() => {
-  console.log('connected')
-  app.listen(4000)
-
-  
-}).catch(e => console.log(e))
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("connected");
+    app.listen(4000);
+  })
+  .catch((e) => console.log(e));
