@@ -1,28 +1,23 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
-
 const compression = require("compression");
 const morgan = require("morgan");
 const fs = require("fs");
-const https = require("https");
 require("dotenv").config();
 
 const app = express();
+const mongoose = require("mongoose");
 
 const authenticate = require("./middleware/auth");
 const expenseController = require("./controllers/expense");
-
 const userRoutes = require("./routes/user");
 
-const mongoose = require("mongoose");
 app.use(cors());
 app.use(express.json());
-
-app.use(express.static(path.join(__dirname, "public")));
-
+app.use(express.urlencoded({ extended: true }));
 app.use(compression());
-app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, "access.log"),
@@ -30,7 +25,6 @@ const accessLogStream = fs.createWriteStream(
 );
 
 app.use(express.static(path.join(__dirname, "public")));
-
 app.use(morgan("combined", { stream: accessLogStream }));
 
 app.get("/public/:filepath*", (req, res) => {
@@ -52,14 +46,25 @@ app.get("/expensetracker", (req, res) => {
   );
 });
 
-app.get('/premium/checkPremium', (req, res) => {
-  res.sendFile(path.join(__dirname, "/public/expensetracker/expensetracker.html"));
+app.get("/premium/checkPremium", (req, res) => {
+  res.sendFile(
+    path.join(__dirname, "/public/expensetracker/expensetracker.html")
+  );
 });
 
 app.get("/expense/get-all-urls", authenticate, expenseController.downloadUrls);
 app.post("/expense/add-expense", authenticate, expenseController.addExpense);
-
-app.use("/user", userRoutes);
+app.delete(
+  "/expense/deleteExpense/:id",
+  authenticate,
+  expenseController.deleteExpense
+); // Endpoint for deleting expense
+app.post(
+  "/expense/edit-expense/:id",
+  authenticate,
+  expenseController.editExpense
+); // Endpoint for editing expense
+app.post("/expense/get-expense", authenticate, expenseController.getExpenses);
 
 mongoose
   .connect(process.env.MONGO_URI)

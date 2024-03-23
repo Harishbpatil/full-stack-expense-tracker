@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log(e);
     }
   }
-  
+
   async function renderElements() {
     if (localStorage.getItem("token") == undefined) {
       // window.location = "/login/login.html";
@@ -161,30 +161,29 @@ document.addEventListener("DOMContentLoaded", () => {
   async function handleClick(e) {
     try {
       if (e.target.classList.contains("delete")) {
+        // Delete expense
         let expenseId = e.target.id;
         let res = await axiosInstance.delete(`/deleteExpense/${expenseId}`);
         if (res.status == 200) {
           let rowToRemove = e.target.parentElement.parentElement;
           tableBody.removeChild(rowToRemove);
         }
-      }
-      if (e.target.classList.contains("edit")) {
-        next = e.target.parentElement.parentElement;
-        id = e.target.id;
+      } else if (e.target.classList.contains("edit")) {
+        // Edit expense
         let row = e.target.parentElement.parentElement;
         let cells = row.getElementsByTagName("td");
-
+        id = e.target.id; // Set the id of the expense to be edited
         document.getElementById("expense").value = cells[0].textContent;
         document.getElementById("description").value = cells[1].textContent;
         document.getElementById("category").value = cells[2].textContent;
-
-        tableBody.removeChild(row);
+        next = row; // Save a reference to the current row for re-insertion
+        tableBody.removeChild(row); // Remove the row temporarily for editing
       }
     } catch (e) {
       console.error(e);
     }
   }
-
+  
   document.getElementById("logout").addEventListener("click", () => {
     localStorage.removeItem("token");
     localStorage.removeItem("isPremiumUser");
@@ -258,13 +257,13 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Token not found in localStorage.");
         return;
       }
-  
+
       const response = await axiosInstance.get("/get-all-urls", {
         headers: {
           "auth-token": token,
         },
       });
-  
+
       console.log(response.data);
       // Handle response data to display download URLs
     } catch (error) {
