@@ -163,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.target.classList.contains("delete")) {
         // Delete expense
         let expenseId = e.target.id;
-        let res = await axiosInstance.delete(`/deleteExpense/${expenseId}`);
+        let res = await axiosInstance.delete(`/delete-expense/${expenseId}`);
         if (res.status == 200) {
           let rowToRemove = e.target.parentElement.parentElement;
           tableBody.removeChild(rowToRemove);
@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error(e);
     }
   }
-  
+
   document.getElementById("logout").addEventListener("click", () => {
     localStorage.removeItem("token");
     localStorage.removeItem("isPremiumUser");

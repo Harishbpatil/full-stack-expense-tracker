@@ -1,54 +1,51 @@
-// Update the login.js file to handle login requests and display appropriate messages
+document.addEventListener("DOMContentLoaded", function () {
+  // Add an event listener to the login form for submission
+  var loginForm = document.getElementById("login");
 
-// Add an event listener to the login form for submission
-document.getElementById("login").addEventListener("submit", loginUser);
+  if (loginForm) {
+    loginForm.addEventListener("submit", async function (event) {
+      event.preventDefault();
 
-// Create an Axios instance with a base URL for user-related operations
-const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000/user",
-});
+      try {
+        // Prepare user login data from the form
+        const formData = {
+          email: document.getElementById("email").value,
+          password: document.getElementById("password").value,
+        };
 
-// Async function to handle user login
-async function loginUser(e) {
-  // Prevent the default form submission behavior
-  e.preventDefault();
+        // Make a POST request to the server to login the user
+        const response = await axios.post(
+          "http://localhost:4000/user/login",
+          formData
+        );
 
-  try {
-    // Prepare user login data from the form
-    const data = {
-      email: e.target.email.value,
-      password: e.target.password.value,
-    };
+        // Check if login was successful (status code 200)
+        if (response.status === 200) {
+          // Extract the token from the response
+          const token = response.data.token;
 
-    // Make a POST request to the server to login the user
-    const res = await axiosInstance.post("/login", data);
+          // Store the token in the localStorage
+          localStorage.setItem("token", token);
 
-    // Log the response from the server
-    console.log(res);
+          // Redirect the user to the expensetracker page
+          window.location.href = "/expensetracker"; // Redirect to expensetracker page
+        } else {
+          // Display an error message if login was unsuccessful
+          alert("Login failed. Please check your credentials and try again.");
+        }
+      } catch (error) {
+        // Handle errors and display appropriate messages
+        console.error("An error occurred during login:", error);
 
-    // Check if login was successful (status code 200)
-    if (res.status === 200) {
-      // Extract the token from the response
-      const token = res.data.token;
-
-      // Store the token in the localStorage
-      localStorage.setItem("token", token);
-
-      // Redirect the user to the expensetracker page
-      window.location.href = "/expensetracker"; // Redirect to expensetracker page
-    } else {
-      // Display an error message if login was unsuccessful
-      alert("Login failed. Please check your credentials and try again.");
-    }
-  } catch (error) {
-    // Handle errors and display appropriate messages
-    console.error("An error occurred during login:", error);
-
-    // Check if the error is due to unauthorized access (status code 401)
-    if (error.response && error.response.status === 401) {
-      alert("Incorrect email or password. Please try again.");
-    } else {
-      alert("An unexpected error occurred. Please try again later.");
-    }
+        // Check if the error is due to unauthorized access (status code 401)
+        if (error.response && error.response.status === 401) {
+          alert("Incorrect email or password. Please try again.");
+        } else {
+          alert("An unexpected error occurred. Please try again later.");
+        }
+      }
+    });
+  } else {
+    console.error("Element with ID 'login' not found.");
   }
-}
+});

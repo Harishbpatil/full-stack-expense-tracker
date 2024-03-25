@@ -18,6 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(compression());
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/user", userRoutes);
 
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, "access.log"),
