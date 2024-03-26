@@ -46,17 +46,34 @@ exports.deleteExpense = async (req, res) => {
   }
 };
 
+// controllers/expense.js
+
 exports.editExpense = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.params.id; // Get the id from the request parameters
+    if (!id) {
+      return res
+        .status(400)
+        .json({ success: false, msg: "Expense ID is required" });
+    }
+
+    const { expense, description, category } = req.body;
+    if (!expense || !description || !category) {
+      return res
+        .status(400)
+        .json({ success: false, msg: "Expense details are incomplete" });
+    }
+
     const updatedExpense = await Expense.findOneAndUpdate(
       { _id: id, userId: req.user._id },
-      { ...req.body },
+      { expense, description, category },
       { new: true }
     );
+
     if (!updatedExpense) {
       return res.status(404).json({ success: false, msg: "Expense not found" });
     }
+
     return res.json({ success: true, data: updatedExpense });
   } catch (error) {
     console.error(error);

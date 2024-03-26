@@ -1,193 +1,138 @@
-/* Reset some default styles */
-body,
-h1,
-h2,
-h3,
-p,
-ul,
-li,
-form {
+/* Resetting default margin and padding */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* Basic styling for the body */
+/* Basic styling */
 body {
-  font-family: "Arial", sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #343a40;
   line-height: 1.6;
 }
 
-/* Navigation styling */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Navigation */
 nav {
-  background-color: #252729;
+  background-color: #343a40;
   padding: 10px;
 }
 
 nav a {
-  color: #fff;
+  color: white;
   text-decoration: none;
 }
 
-/* Header styling */
+/* Header */
 header {
-  background-color: #12151a;
+  background-color: #007bff;
   padding: 20px;
-  color: #fff;
+  text-align: center;
 }
 
-header div {
-  display: flex;
-  align-items: center;
-}
-
-#premium,
-#logout,
-#btn,
-#download-expense {
-  transition: background-color 0.3s, color 0.3s;
-}
-
-#premium:hover {
-  background-color: #218838;
-}
-
-#premium-user {
-  color: #ffffff;
-  margin-right: 10px;
-}
-
-#showleaderboard {
-  background-color: #3e91eb; /* Blue color */
-  color: #fff
-}
-
-#showleaderboard:hover {
-  background-color: #6bda4f; /* Green color on hover */
-}
-
-.view-expense {
-  background-color: #3e91eb;
-  margin-left: 30px; /* Blue color */
-  color: #fff
-  
-}
-
-.view-expense a {
-  text-decoration: none;
-  color: #ffffff;
-}
-
-#logout:hover {
-  background-color: #f10a0a;
-}
-
-#logout {
-  background-color: #0e9aec;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  margin-left: 30px;
-}
-
-/* Form styling */
+/* Form */
 .choose-expense {
-  margin: 20px;
-}
-
-form {
   display: flex;
   flex-direction: column;
+  padding: 20px;
 }
 
-label {
-  margin-bottom: 5px;
+.choose-expense label {
+  font-weight: bold;
 }
 
-input,
-select,
-button {
-  margin-bottom: 15px;
+.choose-expense input[type="text"],
+.choose-expense select {
+  margin-bottom: 10px;
   padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
 }
 
-#btn {
-  background-color: #08b132;
-  color: #fff;
+.choose-expense button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
   border: none;
   cursor: pointer;
 }
 
-#btn:hover {
-  background-color: #007e2d;
+/* Expense Display */
+.display ul {
+  list-style: none;
+  padding: 0;
 }
 
-/* Display styling */
-.display {
-  margin: 20px;
-}
-
-h2 {
-  margin-bottom: 15px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
-}
-
-/* Page and Pagination styling */
+/* Page Buttons */
 .page {
-  margin: 20px;
+  margin-top: 20px;
+  text-align: center;
 }
 
 .page-btn {
-  background-color: #08a816;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  margin-right: 5px;
-}
-
-.page-btn:hover {
-  background-color: #06b643;
-}
-
-/* Number of Expenses styling */
-.number-of-expenses {
-  margin: 20px;
-}
-
-/* Leaderboard styling */
-#leaderboard {
-  margin: 20px;
-}
-
-/* Download styling */
-#download-expense {
+  margin: 0 5px;
+  padding: 5px 10px;
   background-color: #007bff;
-  color: #fff;
+  color: white;
   border: none;
-  padding: 10px;
   cursor: pointer;
-  margin: 20px;
 }
 
-#download-expense:hover {
-  background-color: #0056b3;
+/* Number of Expenses */
+.number-of-expenses {
+  margin-top: 20px;
 }
 
-/* Hide class */
-.hide {
-  display: none;
+/* Download Button */
+.download-expense {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+/* Download URLs */
+#download-urls {
+  margin-top: 20px;
+}
+
+#download-urls ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Premium User Message */
+#premium-user {
+  font-style: italic;
+  color: green;
+}
+
+/* Leaderboard */
+#leaderboard {
+  margin-top: 20px;
+}
+
+#leaderboard h2 {
+  color: #007bff;
+}
+
+#leaderboard ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Responsive Styles */
+@media only screen and (max-width: 768px) {
+  .choose-expense {
+      padding: 10px;
+  }
 }
